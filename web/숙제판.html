@@ -3,7 +3,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <style>
-/* Layout: 한지 위에 세로로 쌓인 패, 넓어지면 일일/주간이 두 단으로 갈라진다 */
+/* Layout: 한지 위에 세로로 쌓인 패. 횟수가 있는 숙제는 행 안에 칸(pill)으로 나눠 체크한다 */
 :root{
   --paper:#F4F0E6; --card:#FCFAF4; --ink:#23272B; --ink-soft:#6E7169;
   --jade:#2E6D5B; --jade-soft:#DCE9E3; --seal:#A8432C; --seal-soft:#F2DED8;
@@ -24,7 +24,7 @@
 *{box-sizing:border-box}
 body{background:var(--paper);color:var(--ink);font-family:var(--font-b);
   font-size:15px;line-height:1.6;-webkit-text-size-adjust:100%}
-.wrap{max-width:1040px;margin:0 auto;padding-inline:16px;padding-block:28px 64px}
+.wrap{max-width:880px;margin:0 auto;padding-inline:16px;padding-block:28px 64px}
 
 h1{font-family:var(--font-d);font-size:clamp(28px,6vw,40px);font-weight:700;
   margin:0;letter-spacing:-.01em;text-wrap:balance}
@@ -35,23 +35,22 @@ h1{font-family:var(--font-d);font-size:clamp(28px,6vw,40px);font-weight:700;
 .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-soft);flex:none}
 .dot.ok{background:var(--jade)} .dot.err{background:var(--seal)}
 
-.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:12px;margin:20px 0 0}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:20px 0 0}
 .tile{background:var(--card);border:1px solid var(--line);border-radius:3px;padding:14px 16px}
-.tile .k{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-soft)}
+.tile .k{font-size:11px;letter-spacing:.09em;color:var(--ink-soft)}
 .tile .v{font-family:var(--font-d);font-size:26px;font-weight:700;
   font-variant-numeric:tabular-nums;margin-top:2px;line-height:1.2}
+.tile .v.sm{font-size:19px}
 .tile .v small{font-size:14px;color:var(--ink-soft);font-weight:400}
 .bar{height:3px;background:var(--line-soft);margin-top:10px;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--jade);width:0;transition:width .35s ease}
-.tile.warn{border-color:var(--seal)} .tile.warn .v{color:var(--seal)}
 
 .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:22px 0 0}
 .chip{font:inherit;font-size:12px;padding:5px 12px;border:1px solid var(--line);
   background:var(--card);color:var(--ink-soft);border-radius:999px;cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-.chip:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
-label:focus-within{outline:2px solid var(--jade);outline-offset:2px}
+.chip:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{
+  outline:2px solid var(--jade);outline-offset:2px}
 
 section.grp{margin-top:34px}
 .grp>h2{font-family:var(--font-d);font-size:20px;font-weight:700;margin:0 0 2px;
@@ -63,25 +62,34 @@ section.grp{margin-top:34px}
   border:1px solid var(--line);border-radius:3px;overflow:hidden}
 
 .row{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:start;
-  background:var(--card);padding:12px 14px;cursor:pointer;min-width:0}
+  background:var(--card);padding:12px 14px;min-width:0}
 .row:hover{background:var(--jade-soft)}
-.row input{appearance:none;width:19px;height:19px;border:1.5px solid var(--ink-soft);
+.row input[type=checkbox]{appearance:none;width:19px;height:19px;border:1.5px solid var(--ink-soft);
   border-radius:2px;margin:2px 0 0;cursor:pointer;flex:none;background:transparent;position:relative}
 .row input:checked{background:var(--jade);border-color:var(--jade)}
 .row input:checked::after{content:"";position:absolute;left:5.5px;top:1.5px;width:5px;height:10px;
-  border:solid #fff;border-width:0 2px 2px 0;transform:rotate(42deg)}
-.row .nm{font-weight:500;min-width:0;overflow-wrap:anywhere}
-.row .meta{display:block;font-size:12px;color:var(--ink-soft);font-weight:400;margin-top:2px}
-.row .meta b{font-weight:500;color:var(--ink)}
-.row.done .nm{color:var(--ink-soft);text-decoration:line-through;text-decoration-thickness:1px}
+  border:solid var(--paper);border-width:0 2px 2px 0;transform:rotate(42deg)}
+.row input:indeterminate{border-color:var(--jade);background:var(--jade-soft)}
+.row input:indeterminate::after{content:"";position:absolute;left:3.5px;top:7px;width:9px;height:2px;
+  background:var(--jade)}
+.nm{min-width:0;overflow-wrap:anywhere}
+.nm .t{font-weight:500;cursor:pointer}
+.nm .prog{font-size:12px;color:var(--jade);font-variant-numeric:tabular-nums;margin-left:6px;font-weight:500}
+.meta{display:block;font-size:12px;color:var(--ink-soft);margin-top:2px}
+.meta b{font-weight:500;color:var(--ink)}
+.row.done .t{color:var(--ink-soft);text-decoration:line-through;text-decoration-thickness:1px}
 .row.done .meta{opacity:.6}
+
+.steps{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.pill{font:inherit;font-size:12px;padding:3px 11px;border:1px solid var(--line);border-radius:999px;
+  background:var(--card);color:var(--ink-soft);cursor:pointer;font-variant-numeric:tabular-nums}
+.pill:hover{border-color:var(--jade);color:var(--ink)}
+.pill[aria-pressed="true"]{background:var(--jade);border-color:var(--jade);color:var(--paper)}
+
 .tags{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:none}
 .tag{font-size:10.5px;letter-spacing:.04em;padding:2px 7px;border-radius:2px;white-space:nowrap}
-.t-req{background:var(--seal-soft);color:var(--seal)}
-.t-rec{background:var(--jade-soft);color:var(--jade)}
-.t-opt{background:var(--line-soft);color:var(--ink-soft)}
-.t-unv{background:transparent;color:var(--ink-soft);border:1px dashed var(--line)}
-.tm{font-size:11px;color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.t-key{background:var(--seal-soft);color:var(--seal)}
+.t-cyc{background:var(--line-soft);color:var(--ink-soft)}
 .del{appearance:none;border:0;background:none;color:var(--ink-soft);font:inherit;
   font-size:15px;line-height:1;padding:2px 4px;cursor:pointer}
 .del:hover{color:var(--seal)}
@@ -89,23 +97,13 @@ section.grp{margin-top:34px}
 .addrow{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
 .addrow input[type=text]{flex:1 1 180px;min-width:0;font:inherit;font-size:14px;padding:8px 11px;
   border:1px solid var(--line);border-radius:3px;background:var(--card);color:var(--ink)}
-.addrow select,.btn{font:inherit;font-size:13px;padding:8px 13px;border:1px solid var(--line);
+.btn{font:inherit;font-size:13px;padding:8px 13px;border:1px solid var(--line);
   border-radius:3px;background:var(--card);color:var(--ink);cursor:pointer}
-.btn.pri{background:var(--ink);color:var(--paper);border-color:var(--ink)}
-
-.ev{display:flex;gap:12px;align-items:baseline;padding:9px 0;border-bottom:1px dashed var(--line);
-  font-size:13px;flex-wrap:wrap}
-.ev:last-child{border-bottom:0}
-.ev .d{font-variant-numeric:tabular-nums;color:var(--ink-soft);font-size:12px;flex:none}
-.ev .left{margin-left:auto;font-size:11.5px;padding:1px 7px;border-radius:2px;
-  background:var(--line-soft);color:var(--ink-soft);flex:none}
-.ev .left.soon{background:var(--seal-soft);color:var(--seal)}
 
 textarea{width:100%;font:inherit;font-size:14px;padding:11px 13px;border:1px solid var(--line);
   border-radius:3px;background:var(--card);color:var(--ink);resize:vertical;min-height:84px}
 .saved{font-size:12px;color:var(--ink-soft);margin-top:6px;min-height:1.4em}
-footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);
-  font-size:12px;color:var(--ink-soft)}
+footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-soft)}
 footer p{margin:0 0 6px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -114,7 +112,7 @@ footer p{margin:0 0 6px}
   <div class="hdr">
     <div>
       <h1>연운 숙제판</h1>
-      <p class="sub">한국 서버 2.2 · 일일 06시 / 주간 월요일 06시 초기화</p>
+      <p class="sub">한국 서버 2.3 · 일일 06시 / 주간 월요일 06시 / 월간 1일 06시 초기화</p>
     </div>
     <div class="status"><span class="dot" id="dot"></span><span id="st">불러오는 중</span></div>
   </div>
@@ -126,160 +124,111 @@ footer p{margin:0 0 6px}
     <div class="tile"><div class="k">주간</div>
       <div class="v"><span id="wN">0</span><small> / <span id="wT">0</span></small></div>
       <div class="bar"><i id="wB"></i></div></div>
-    <div class="tile"><div class="k">다음 초기화</div>
-      <div class="v" id="rD" style="font-size:19px">—</div>
-      <div class="bar"><i id="rB"></i></div></div>
-    <div class="tile warn"><div class="k">시즌 S4 종료</div>
-      <div class="v" id="sz" style="font-size:19px">—</div>
-      <div class="bar"><i id="szB" style="background:var(--seal)"></i></div></div>
+    <div class="tile"><div class="k">일일 초기화까지</div>
+      <div class="v sm" id="rD">—</div>
+      <div class="bar"><i id="rDB"></i></div></div>
+    <div class="tile"><div class="k">주간 초기화까지</div>
+      <div class="v sm" id="rW">—</div>
+      <div class="bar"><i id="rWB"></i></div></div>
   </div>
 
   <div class="tools">
     <button class="chip" id="f-all" aria-pressed="true">전체</button>
-    <button class="chip" id="f-key" aria-pressed="false">필수 + 권장</button>
-    <button class="chip" id="f-req" aria-pressed="false">필수만</button>
+    <button class="chip" id="f-key" aria-pressed="false">핵심만</button>
     <button class="chip" id="f-todo" aria-pressed="false">남은 것만</button>
   </div>
 
   <main id="main"></main>
 
   <section class="grp">
-    <h2>진행 중 이벤트</h2>
-    <p class="note">기간 한정이라 체크리스트에는 넣지 않았어요. 끝나면 자동으로 사라집니다.</p>
-    <div id="evs"></div>
-  </section>
-
-  <section class="grp">
     <h2>메모</h2>
-    <p class="note">여기 적어두면 Claude가 세션에서 그대로 읽습니다. 막힌 것, 바꾸고 싶은 항목, 질문 등.</p>
-    <textarea id="memo" placeholder="예) 협경 2보스에서 막힘. 서리 백야 3돌 완료."></textarea>
+    <p class="note">여기 적으면 Claude가 세션에서 읽습니다. 막힌 것, 바꾸고 싶은 항목, 게임에서 확인한 것 등.</p>
+    <textarea id="memo" placeholder="예) 천산갑 노점은 수요일에 갱신됨. 협경 동맹 2보스에서 막힘."></textarea>
     <div class="saved" id="memoS"></div>
   </section>
 
-  <section class="grp">
-    <h2>숙제가 아닌 것</h2>
-    <p class="note">매일 뜨는 것처럼 보이지만 반복 숙제가 아니라 체크리스트에서 뺐습니다.</p>
-    <div id="once"></div>
-  </section>
-
   <footer>
-    <p><b>주 출처</b> — 아카라이브 Los 「숙제 정리」(2026-09-24 갱신). 보조로 wwm-app.com 스케줄러(2026-10-02 갱신)와 공식 공지.</p>
-    <p><b>미확인</b> 표시는 원글 본문이 아니라 댓글 제보입니다. 게임에서 보시고 메모에 적어주시면 정리할게요.</p>
-    <p>그 밖에 확인 못 한 것 — 체력 일일 회복량, 무도심궁 주기, 침중산 정체.</p>
+    <p><b>목록 출처</b> — 아카라이브 Los 「숙제 정리」(2026-09-24 갱신) 요약에 천산갑 노점을 더한 목록입니다.</p>
+    <p><b>확인 못 함</b> — 천산갑 노점 재고 갱신 요일(월요일로 가정), 무묘 유파 시련 추가 시각(목요일 06시로 가정), 시즌 5에서도 옥어패 주간 상한이 23,000인지. 게임에서 보시고 메모에 적어주세요.</p>
   </footer>
 </div>
 
 <script>
 const KST=9*3600e3;
+/* c: d=일일, w=주간(월 06시), wt=주간(목 06시), m=월간.  p:1 = 핵심.  steps가 있으면 칸마다 따로 체크한다. */
 const ITEMS=[
- {id:"d-simryeok",c:"d",n:"심력 전부 소진",loc:"강호행 › 도전",rw:"거점=비결재료 · 진수전=세트장비 · 검무장=심득",tm:"15~30분",p:1,
-  x:"하루 180 회복(2026-09-24 정정, 이전 글은 160). 심력당 효율은 셋 다 같으니 필요한 재료로 고른다. 넘치지만 않게 며칠에 한 번 몰아서 빼도 된다."},
- {id:"d-chaejip",c:"d",n:"채집",loc:"월드 채집",rw:"비결 재료 · 활/각지 재료",tm:"10~30분",p:1,
-  x:"오전 6시 초기화. 우측 식물 아이콘을 눌러 화면에 띄울 수 있다."},
- {id:"d-field",c:"d",n:"필드 적 사냥",loc:"월드",rw:"전리품 (하루 100개 상한)",tm:"가변",p:2,
-  x:"취독산 공장을 세팅해두면 편하다. 연운통보가 안 나올 때까지."},
- {id:"d-howryeong",c:"d",n:"문파 강호호령",loc:"문파 › 강호호령",rw:"개당 강호 명성 60 · 주 1500 상한",tm:"1~5분",p:2,
-  x:"새로고침 무제한. 문파 소속이면 주간 상한을 채운 뒤에도 매일 할 것 — 문파 공적치는 상한이 없고 진급 심사(누적 줄세우기)에 쓰인다."},
- {id:"d-gongdeokji",c:"d",n:"공덕지",loc:"멀티모드 › 공덕지 (불선선 근처)",rw:"연운통보",tm:"3분",p:2,
-  x:"돈뿌리기 5회 + 허공섭물 3회. 통보를 은근히 많이 준다. 기원나무 구걸은 액수가 적고 번개 맞으면 부상이라 원글은 안 한다."},
- {id:"d-dongryo",c:"d",n:"동료 협력수치 소모",loc:"동료",rw:"—",tm:"5분",p:2,
-  x:"하루 300 회복, 상한 2000. 넘치지 않게 뺀다."},
- {id:"d-dongmaeng",c:"d",n:"동맹 일일 임무",loc:"동맹",rw:"동맹 공헌치",tm:"5분",p:2,x:"동맹(길드) 가입 시에만. 문파와 다르다."},
- {id:"d-hyeonsang",c:"d",n:"현상 NPC 사냥",loc:"강호행 › 현상 (복수/수배)",rw:"현상 점수",tm:"10분",p:3,
-  x:"하루 8명 제한. 청하·불견산 두 종류를 다 체크. 5만 점이면 의상을 사는데 NPC만 잡으면 한 달쯤 걸린다. 의상에 관심 없으면 건너뛴다."},
- {id:"d-gwimun",c:"d",n:"귀문시장 옥석 거래",loc:"귀문시장",rw:"되팔아 통보 차익",tm:"3분",p:3,
-  x:"푸른 원석 5개 + 검은 원석 5개, 각 250통보. 스케줄러 출처라 원글에는 없다."},
- {id:"d-suryeon",c:"d",n:"수련 3종",loc:"문파 수련장",rw:"통보 · 경험치",tm:"3분",p:3,
-  x:"복지수련 · 오금희 · 다인수련. 강호호령과 중첩된다. 스케줄러 출처."},
- {id:"d-shop",c:"d",n:"일일 상점 재고 구매",loc:"상점",rw:"성장 재료",tm:"2분",p:3,x:"스케줄러 출처."},
- {id:"d-pokpo",c:"d",n:"용호령 폭포 아래 NPC",loc:"용호령 옆 폭포 아래",rw:"장명옥 1개 (24시간 쿨)",tm:"1분",p:3,unv:1,
-  x:"댓글 제보(2026-06-23). 본문에 없어 원글쓴이가 확인하지 않았다."},
+ {id:"d-howryeong",c:"d",n:"강호호령",loc:"문파 › 강호호령",rw:"개당 명성 60 · 주 1,500 상한",p:2,
+  x:"새로고침 무제한. 문파 소속이면 주간 상한을 채운 뒤에도 매일 할 것 — 문파 공적치는 상한이 없고 진급 심사에 쓰인다."},
+ {id:"d-chaejip",c:"d",n:"채집",loc:"월드",rw:"비결 재료 · 활/각지 재료",p:2,
+  x:"우측 식물 아이콘을 누르면 화면에 표시된다. 활·깍지도 세트 효과가 있으니 제작 재료를 챙겨둘 것."},
+ {id:"d-field",c:"d",n:"필드 사냥",loc:"월드",rw:"연운통보 · 전리품 (하루 100개 상한)",p:2,
+  x:"연운통보가 안 나올 때까지. 취독산 공장을 세팅해두면 편하다."},
+ {id:"d-gongdeokji",c:"d",n:"공덕지 돈뿌리기",loc:"멀티모드 › 공덕지 (불선선 근처)",rw:"연운통보",p:2,
+  x:"돈뿌리기 5회. 같은 곳에서 허공섭물 3회도 된다."},
+ {id:"d-hyeonsang",c:"d",n:"현상 NPC 사냥",loc:"강호행 › 현상 (복수/수배)",rw:"현상 점수 (의상)",p:2,steps:["청하","불견산"],
+  x:"NPC는 하루 8명 제한. 5만 점이면 의상을 산다. 의상에 관심 없으면 건너뛴다."},
 
- {id:"w-hyeopgyeong",c:"w",n:"협경 2회",loc:"강호행 › 도전 › 협경",rw:"심법/무술 심득 상자 · 장비상자 · 정음석",tm:"1시간",p:1,
-  x:"일반 1회 + 동맹 1회. 51레벨부터. 심력을 안 쓴다. 심득 수급 1순위."},
- {id:"w-okeopae",c:"w",n:"옥어패 23,000개 소진",loc:"시즌 › 시즌상점",rw:"아래 항목 전부",tm:"5분",p:1,
-  x:"추천 구매 — 전투양성: 진옥·심법 심득·무술 심득·금사 돈주머니 / 장비: 레벨 맞는 것 / 기술양성: 이정표 제외 전부 / 시즌 따라잡기: 장비 지원 상자·묘음석 지원 상자 / 외관교환: 음의 선율·우의 도면 조각. 옥어패는 모든 콘텐츠에서 나오니 따로 노릴 필요는 없다."},
- {id:"w-simdeuk40",c:"w",n:"└ 심법 심득 40개",loc:"시즌상점 › 전투양성",rw:"개당 옥어패 150 (주간 한도 40)",tm:"1분",p:1},
- {id:"w-bigyeol10",c:"w",n:"└ 비결 돌파 상자 10개",loc:"시즌상점 › 전투양성",rw:"개당 옥어패 500 · 상자당 비결재료 1종 선택 3개",tm:"1분",p:1},
- {id:"w-jangbi25",c:"w",n:"└ 등급별 장비 상자 25개",loc:"시즌상점 › 장비 보물함",rw:"개당 옥어패 100",tm:"1분",p:2},
- {id:"w-taepyeong-sillyeon",c:"w",n:"태평무묘 유파시련 5회",loc:"강호행 › 태평무묘",rw:"유파 시련 보상",tm:"30분",p:1,
-  x:"매주 목요일에 도전 횟수 5회가 추가된다. 만렙 찍고 템을 좀 모아야 할 만하다."},
- {id:"w-taepyeong",c:"w",n:"태평무묘 전승 교환",loc:"강호행 › 태평무묘 › 전승 교환",rw:"심법 심득 5 / 비결 돌파 상자 5 (각 깨달음의 원석 5)",tm:"3분",p:1},
- {id:"w-ganghoryeong",c:"w",n:"강호령 상점 교환",loc:"강호령 › 상점",rw:"변음석 · 전율석 · 비결돌파 상자",tm:"2분",p:2,
-  x:"월요일 리셋. 다 사면 좋지만 변음석과 전율석이 우선. 강호령 = 시즌 패스로, 문파 강호호령과 다르다."},
- {id:"w-boju",c:"w",n:"동맹 보주 2,500개",loc:"동맹",rw:"보주 + 천기옥",tm:"가변",p:2,
-  x:"화물 운송하면 빨리 찬다. 같이 주는 천기옥은 주간 상한이 없고 기예 업그레이드에 쓰이니 가능한 많이."},
- {id:"w-sahaecheop",c:"w",n:"사해첩 1,000개",loc:"멀티 콘텐츠 (교류훈련·유희·지과)",rw:"사해첩",tm:"가변",p:2,
-  x:"따로 노릴 건 없고 강호호령 하면서 겸사겸사. 교류훈련 사해첩 보상은 매일 초기화된다. 가끔 뜨는 배를 타면 많이 준다."},
- {id:"w-hwajeon",c:"w",n:"강호 화전 2,000개",loc:"강호 › 협연 / 사제 / 결의",rw:"화전",tm:"가변",p:2,
+ {id:"w-simryeok",c:"w",n:"심력 털기",loc:"강호행 › 도전",rw:"71~90렙은 거점(오금철), 91제부터 진수전·검무장",p:1,steps:["1회","2회","3회"],
+  x:"하루 180 회복. 최대치가 500이면(스케줄러 기준) 3일이 안 돼 꽉 차서 주 1회로는 넘친다. 2~3일마다 한 번씩 털 것."},
+ {id:"w-hyeopgyeong",c:"w",n:"협경 2회",loc:"강호행 › 도전 › 협경",rw:"심법·무술 심득 상자 · 장비상자 · 정음석",p:1,steps:["일반","동맹"],
+  x:"51레벨부터. 심력을 안 쓴다. 심득 수급 1순위."},
+ {id:"w-okeopae",c:"w",n:"옥어패 23,000개",loc:"시즌 › 시즌상점",rw:"심득 · 진옥 · 장비 · 기술 재료",p:1,
+  x:"추천 구매 — 전투양성: 진옥·심법 심득·무술 심득·금사 돈주머니 / 장비: 레벨 맞는 것 / 기술양성: 이정표 제외 전부 / 시즌 따라잡기: 장비·묘음석 지원 상자 / 외관교환: 음의 선율·우의 도면 조각"},
+ {id:"w-taepyeong-sillyeon",c:"wt",n:"무묘 유파 시련 5회",loc:"강호행 › 태평무묘 › 유파시련",rw:"유파 시련 보상",p:1,steps:["1","2","3","4","5"],
+  x:"매주 목요일에 도전 5회가 추가된다. 그래서 이 항목만 목요일 06시에 풀린다. 만렙 찍고 템을 좀 모아야 할 만하다."},
+ {id:"w-ganghoryeong",c:"w",n:"강호령 상점 교환",loc:"강호령 › 상점",rw:"변음석 · 전율석 · 비결돌파 상자",p:2,
+  x:"월요일 리셋. 변음석과 전율석이 우선. 강호령은 시즌 패스로, 문파 강호호령과 다르다."},
+ {id:"w-cheonsangap",c:"w",n:"천산갑 노점",loc:"불견산 › 수향",rw:"전율석 · 변음석 · 제작 재료",p:2,
+  x:"재고 갱신 요일은 확인 못 함. 월요일로 가정했다."},
+ {id:"w-eumseonyul",c:"w",n:"음의 선율 교환 (2+1)",loc:"상점 › 베스트 › 아이템",rw:"음의 선율",p:2,steps:["2개","+1개"],
+  x:"상점에서 주 2개. +1은 시즌상점 외관교환으로 보이나 확인 못 함."},
+ {id:"w-sahaecheop",c:"w",n:"사해첩 1,000개",loc:"멀티 콘텐츠 (교류훈련·유희·지과)",rw:"사해첩",p:2,
+  x:"강호호령 하면서 겸사겸사. 교류훈련 보상은 매일 초기화된다. 가끔 뜨는 배를 타면 많이 준다."},
+ {id:"w-boju",c:"w",n:"동맹 보주 2,500개",loc:"동맹",rw:"보주 · 천기옥",p:2,
+  x:"화물 운송하면 빨리 찬다. 같이 주는 천기옥은 상한이 없고 기예 업그레이드에 쓰인다."},
+ {id:"w-hwajeon",c:"w",n:"강호 화전 2,000개",loc:"강호 › 협연 / 사제 / 결의",rw:"화전",p:2,
   x:"팀을 맺고 멀티 콘텐츠를 돌면 찬다."},
- {id:"w-gakjangrim",c:"w",n:"각장림 죄엽 2,000개",loc:"강호행 › 지과 › 각장림",rw:"죄엽",tm:"30분",p:2,
-  x:"PvP. 잠수해도 먹히지만 사람 잡고 가방에 금색 템을 채우면 더 얻는다. PvP가 싫으면 도망다니며 템만 파밍하고 철수 — 죽으면 점수가 올라 매칭이 빡세지는데 철수하면 0점이라 느긋하게 파밍할 수 있다. 헤어가 예쁘다."},
- {id:"w-dojinheo",c:"w",n:"도진허 비단 2,000개",loc:"강호행 › 지과 › 도진허",rw:"비단 + 깜짝 선물 상자 5개 구입",tm:"30분",p:2},
- {id:"w-eumseonyul",c:"w",n:"음의 선율 2개 구매",loc:"상점 › 베스트 › 아이템",rw:"음의 선율",tm:"1분",p:2,x:"매주 2개."},
- {id:"w-dongryo-weekly",c:"w",n:"동료 주간 3종",loc:"동료",rw:"심법 상자 등",tm:"20분",p:2,
-  x:"풍류기행 주 3회 (협력수치 하루 144 회복, 상한 1000) · 거위 동료 대결 주 5회(심법 상자) · 동료 소원 주 8회"},
- {id:"w-jinhon",c:"w",n:"진혼(검무장) 주간 보상",loc:"강호행 › 도전 › 검무장",rw:"외관상자 5",tm:"15분",p:2,x:"스케줄러 출처."},
- {id:"w-dm-weekly",c:"w",n:"동맹 주간 임무 · 이벤트 · 기예",loc:"동맹",rw:"동맹 화폐 · 버프",tm:"10분",p:2},
- {id:"w-simaesa",c:"w",n:"시매사 매매",loc:"시매사",rw:"연운통보 차익",tm:"10분",p:3,
-  x:"토요일 물품 갱신, 월요일 재입고, 보통 수요일에 가격이 제일 높다. 토요일 구매 → 다음 주 수요일 판매 → 재구매. 현지 가격 100%를 넘으면 구매가 막힌다. 판매엔 협동 신청이 필요하고, 동맹 기예를 찍고 동맹원에게 팔면 약 50% 이득."},
- {id:"w-gaeop",c:"w",n:"가업 일확천금",loc:"가업 › 터전 재건 › 일확천금",rw:"가업 보상",tm:"20분",p:3,
-  x:"가업 4레벨부터 해금. 주문 5개 납품이 가업 콘텐츠의 메인이다. 추가로 소당주의 하루 주 3회."},
- {id:"w-tongbo",c:"w",n:"연운통보 주간 한도",loc:"시즌상점",rw:"체력 200 → 2만 통보, 주 15회",tm:"5분",p:3,
-  x:"다 채우면 체력 3,000 / 통보 30만. 스케줄러 출처."},
- {id:"w-munkyu",c:"w",n:"문파 주간 문규 할당",loc:"문파 › 규율",rw:"규율 점수 유지",tm:"가변",p:3,
-  x:"미달하면 감점된다. 벌칙만 받고 끝나며 전투력과는 무관하다."},
- {id:"w-ohranbang",c:"w",n:"오란방 구매",loc:"목욕탕 (성별 맞는 곳)",rw:"인내력 최대치 버프 음식",tm:"2분",p:3,unv:1,x:"댓글 제보(2026-06-23)."},
- {id:"w-iwonpyo",c:"w",n:"이원 투표권 구매",loc:"비화나루 이원 NPC",rw:"이원 투표권 1개",tm:"2분",p:3,unv:1,
-  x:"댓글 제보(2026-06-23). 필요할 때 몰아서 사면 비싸다."},
- {id:"w-taepyeong-shop",c:"w",n:"태평무묘 상점 구매",loc:"태평무묘 › 상점",rw:"심법 상자 · 비결 상자",tm:"2분",p:3,unv:1,
-  x:"댓글 제보(2026-06-23). 전승 교환과 별개라는 주장이라 인게임 확인 필요."},
- {id:"w-cheobeum-mat",c:"w",n:"첩음·제작 재료 구매",loc:"잡화점",rw:"거친광석 · 거친모피 등",tm:"5분",p:3,unv:1,
-  x:"댓글 제보(2026-06-23). 파밍할 게 아니면 미리 사둔다. 동맹 운송할 때 사면 편하다."},
- {id:"w-gwitturami",c:"w",n:"귀뚜라미 싸움 10회",loc:"—",rw:"단맥전 · 통보",tm:"오래 걸림",p:3,unv:1,x:"댓글 제보(2026-06-23)."},
+ {id:"w-gakjangrim",c:"w",n:"각장림 죄엽 2,000개",loc:"강호행 › 지과 › 각장림",rw:"죄엽 · 헤어",p:2,
+  x:"PvP가 싫으면 도망다니며 템만 줍고 철수. 철수하면 점수가 0점이라 매칭이 편해진다."},
+ {id:"w-dojinheo",c:"w",n:"도진허 비단 2,000개",loc:"강호행 › 지과 › 도진허",rw:"비단 · 깜짝 선물 상자",p:2,steps:["비단 2,000","상자 5개 구입"]},
+ {id:"w-simaesa",c:"w",n:"시매사",loc:"시매사",rw:"연운통보 차익",p:2,steps:["구매","판매"],
+  x:"토요일 물품 갱신, 월요일 재입고, 보통 수요일 가격이 제일 높다. 토요일에 사서 수요일에 판다. 현지 가격 100%를 넘으면 구매가 막힌다."},
+ {id:"w-dongryo-weekly",c:"w",n:"동료",loc:"동료",rw:"심법 상자 등",p:2,steps:["에너지","소원","거위 대결"],
+  x:"협력수치 하루 300 회복·상한 2,000 / 풍류기행 주 3회 / 소원 주 8회 / 거위 대결 주 5회(심법 상자)"},
+ {id:"w-gaeop",c:"w",n:"가업",loc:"가업 › 터전 재건",rw:"가업 보상",p:2,steps:["일확천금","소당주의 하루"],
+  x:"가업 4레벨부터. 일확천금은 주문 5개 납품, 소당주의 하루는 주 3회."},
 
- {id:"m-jihwa",c:"m",n:"공명 상점 교환",loc:"공명 › 공명 상점 › 지화 상점",rw:"음의 선율 · 선율 할인권",tm:"2분",p:2,
-  x:"할인권은 옷 살 때 10% 할인, 최대 5개까지 중복 사용. 상시 뽑기를 좀 해야 살 수 있으니 심법 사고 남은 장명옥으로 종종 뽑기를 돌려두면 좋다."},
-];
-const EVENTS=[
- {n:"시즌 S4 '질주 II' 종료",s:"",e:"2026-10-15T04:59:00+09:00",x:"시즌상점 주간 재고가 1~2회 남았다. 옥어패를 지금 다 털 것."},
- {n:"시즌 막판 질주: 쌍복",s:"2026-10-01",e:"2026-10-15T23:59:00+09:00",x:"거점·진수전 심력 20당 보상 1회 추가. 심력 태우기 최적기."},
- {n:"시즌 막판 질주: 각장림",s:"2026-10-08",e:"2026-10-15T23:59:00+09:00"},
- {n:"보물 찾아 산으로",s:"",e:"2026-10-15T23:59:00+09:00"},
- {n:"거위 인사",s:"",e:"2026-10-12T23:59:00+09:00"},
- {n:"땡땡이 길",s:"2026-09-30",e:"2026-10-29T23:59:00+09:00"},
-];
-const ONCE=[
- {n:"청천문 특훈",x:"10일에 걸쳐 매일 1회, 총 10회로 끝납니다. 10회를 채우면 목표에서 '구호 외치기'가 사라지고 이후로는 스탯이 오르지 않아요. 원글도 2026-09-24 갱신에서 일일 목록에서 뺐습니다."},
- {n:"기원나무 구걸",x:"공덕지 근처. 통보를 주긴 하는데 액수가 적고 번개를 맞으면 부상이 걸려서, 원글쓴이는 안 합니다. 하고 싶으면 공덕지 갈 때 같이 하세요."},
- {n:"며칠씩 걸리는 장기 과제",x:"별도 글로 정리돼 있습니다 — arca.live/b/wherewindsmeet/155653182"},
+ {id:"m-jihwa",c:"m",n:"공명 상점 교환",loc:"공명 › 공명 상점 › 지화 상점",rw:"음의 선율 · 선율 할인권",p:2,steps:["음의 선율","할인권"],
+  x:"할인권은 옷 살 때 10% 할인, 최대 5개까지 중복 사용."},
 ];
 const GRPS=[
- {c:"d",t:"일일",note:"매일 06시 초기화. 위에서부터 중요도 순입니다. 심력만 안 넘치게 관리하면 나머지는 다 선택이에요."},
- {c:"w",t:"주간",note:"월요일 06시 초기화. 스펙업 체감은 여기서 거의 다 납니다."},
- {c:"m",t:"월간",note:"매월 1일 06시 초기화."},
+ {cs:["d"],t:"매일",note:"06시에 초기화돼요."},
+ {cs:["w","wt"],t:"매주",note:"월요일 06시에 초기화돼요. 무묘 유파 시련만 목요일 06시예요."},
+ {cs:["m"],t:"매달",note:"1일 06시에 초기화돼요."},
 ];
-const PTAG={1:["필수","t-req"],2:["권장","t-rec"],3:["선택","t-opt"]};
+const CYC={wt:"목 06시"};
 
-function dayStart(now){const d=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate(),21,0,0,0));
+function dayStart(now){const d=new Date(Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate(),21));
   if(now<d)d.setUTCDate(d.getUTCDate()-1);return d;}
-function weekStart(now){const d=dayStart(now);d.setUTCDate(d.getUTCDate()-d.getUTCDay());return d;}
+/* 월 06시 KST = 일 21시 UTC(0), 목 06시 KST = 수 21시 UTC(3) */
+function weekStartOn(now,utcDow){const d=dayStart(now);d.setUTCDate(d.getUTCDate()-((d.getUTCDay()-utcDow+7)%7));return d;}
 function monthStart(now){const k=new Date(now.getTime()+KST);let s=new Date(Date.UTC(k.getUTCFullYear(),k.getUTCMonth(),1,6)-KST);
   if(now<s)s=new Date(Date.UTC(k.getUTCFullYear(),k.getUTCMonth()-1,1,6)-KST);return s;}
-function nextDay(now){const d=dayStart(now);d.setUTCDate(d.getUTCDate()+1);return d;}
-function startOf(c,now){return c==="d"?dayStart(now):c==="w"?weekStart(now):monthStart(now);}
-function dur(ms){if(ms<0)return"지남";const m=Math.floor(ms/6e4),h=Math.floor(m/60),d=Math.floor(h/24);
+function startOf(c,now){return c==="d"?dayStart(now):c==="w"?weekStartOn(now,0):c==="wt"?weekStartOn(now,3):monthStart(now);}
+function dur(ms){if(ms<0)return"곧";const m=Math.floor(ms/6e4),h=Math.floor(m/60),d=Math.floor(h/24);
   if(d>0)return d+"일 "+(h%24)+"시간";if(h>0)return h+"시간 "+(m%60)+"분";return m+"분";}
 
 let DB=null,CHECKS={},CUSTOM={},FILTER="all",memoT=null;
 const $=i=>document.getElementById(i);
 function setStatus(t,k){$("st").textContent=t;$("dot").className="dot"+(k?" "+k:"");}
 function all(){return ITEMS.concat(Object.entries(CUSTOM).map(([id,v])=>
-  ({id,c:v.cycle||"d",n:v.label||"(이름 없음)",loc:"직접 추가",rw:"",tm:"",p:2,custom:true})));}
-function isDone(it,now){const a=CHECKS[it.id];return !!a&&new Date(a)>=startOf(it.c,now);}
+  ({id,c:v.cycle||"d",n:v.label||"(이름 없음)",loc:"직접 추가",rw:"",p:2,custom:true})));}
+function keys(it){return it.steps?it.steps.map((_,i)=>it.id+"__"+i):[it.id];}
+function hit(k,c,now){const a=CHECKS[k];return !!a&&new Date(a)>=startOf(c,now);}
+function prog(it,now){return keys(it).filter(k=>hit(k,it.c,now)).length;}
+function isDone(it,now){return prog(it,now)===keys(it).length;}
 function visible(it,now){
-  if(FILTER==="req")return it.p===1;
-  if(FILTER==="key")return it.p<=2;
+  if(FILTER==="key")return it.p===1;
   if(FILTER==="todo")return !isDone(it,now);
   return true;}
 
@@ -287,7 +236,7 @@ function render(){
   const now=new Date(),items=all(),main=$("main");
   main.textContent="";
   for(const g of GRPS){
-    const mine=items.filter(i=>i.c===g.c);
+    const mine=items.filter(i=>g.cs.includes(i.c));
     if(!mine.length)continue;
     const done=mine.filter(i=>isDone(i,now)).length;
     const sec=document.createElement("section");sec.className="grp";
@@ -298,16 +247,17 @@ function render(){
     const list=document.createElement("div");list.className="list";
     const shown=mine.filter(i=>visible(i,now));
     if(!shown.length){
-      const e=document.createElement("div");e.className="row";e.style.cursor="default";
-      e.textContent=FILTER==="todo"?"이 주기는 다 끝냈습니다.":"이 조건에 맞는 항목이 없습니다.";
-      e.style.gridTemplateColumns="1fr";e.style.color="var(--ink-soft)";list.appendChild(e);
+      const e=document.createElement("div");e.className="row";
+      e.style.gridTemplateColumns="1fr";e.style.color="var(--ink-soft)";
+      e.textContent=FILTER==="todo"?"이 주기는 다 끝냈어요.":"이 조건에 맞는 항목이 없어요.";
+      list.appendChild(e);
     }
     for(const it of shown)list.appendChild(rowEl(it,now));
     sec.appendChild(list);
-    if(g.c==="d"||g.c==="w")sec.appendChild(adder(g.c));
+    if(g.cs[0]!=="m")sec.appendChild(adder(g.cs[0]));
     main.appendChild(sec);
   }
-  const d=items.filter(i=>i.c==="d"),w=items.filter(i=>i.c==="w");
+  const d=items.filter(i=>i.c==="d"),w=items.filter(i=>i.c==="w"||i.c==="wt");
   stat("d",d.filter(i=>isDone(i,now)).length,d.length);
   stat("w",w.filter(i=>isDone(i,now)).length,w.length);
   ticks();
@@ -316,26 +266,36 @@ function stat(k,n,t){$(k+"N").textContent=n;$(k+"T").textContent=t;
   $(k+"B").style.width=(t?Math.round(n/t*100):0)+"%";}
 
 function rowEl(it,now){
-  const done=isDone(it,now);
-  const el=document.createElement("label");el.className="row"+(done?" done":"");
-  const cb=document.createElement("input");cb.type="checkbox";cb.checked=done;cb.id="cb-"+it.id;
-  cb.addEventListener("change",()=>toggle(it,cb.checked));
-  const mid=document.createElement("div");mid.className="nm";mid.append(it.n);
+  const ks=keys(it),n=prog(it,now),done=n===ks.length;
+  const el=document.createElement("div");el.className="row"+(done?" done":"");
+  const cb=document.createElement("input");cb.type="checkbox";cb.id="cb-"+it.id;
+  cb.checked=done;cb.indeterminate=n>0&&!done;
+  cb.addEventListener("change",()=>setAll(it,!done));
+  const mid=document.createElement("div");mid.className="nm";
+  const lb=document.createElement("label");lb.className="t";lb.htmlFor=cb.id;lb.textContent=it.n;mid.appendChild(lb);
+  if(it.steps){const pg=document.createElement("span");pg.className="prog";pg.textContent=n+"/"+ks.length;mid.appendChild(pg);}
   const m1=document.createElement("span");m1.className="meta";
   const b=document.createElement("b");b.textContent=it.loc;m1.appendChild(b);
   if(it.rw)m1.append(" · "+it.rw);
   mid.appendChild(m1);
   if(it.x){const m2=document.createElement("span");m2.className="meta";m2.textContent=it.x;mid.appendChild(m2);}
+  if(it.steps){
+    const st=document.createElement("div");st.className="steps";
+    it.steps.forEach((label,i)=>{
+      const k=ks[i],on=hit(k,it.c,now);
+      const pb=document.createElement("button");pb.type="button";pb.className="pill";
+      pb.textContent=label;pb.setAttribute("aria-pressed",String(on));
+      pb.addEventListener("click",()=>setKeys([k],!on));
+      st.appendChild(pb);
+    });
+    mid.appendChild(st);
+  }
   const tags=document.createElement("div");tags.className="tags";
-  const [tn,tc]=PTAG[it.p];const tg=document.createElement("span");tg.className="tag "+tc;tg.textContent=tn;
-  tags.appendChild(tg);
-  if(it.unv){const u=document.createElement("span");u.className="tag t-unv";u.textContent="미확인";
-    u.title="원글 본문이 아닌 댓글 제보. 인게임 확인 필요";tags.appendChild(u);}
-  if(it.tm){const tm=document.createElement("span");tm.className="tm";tm.textContent=it.tm;tags.appendChild(tm);}
+  if(it.p===1){const t=document.createElement("span");t.className="tag t-key";t.textContent="핵심";tags.appendChild(t);}
+  if(CYC[it.c]){const t=document.createElement("span");t.className="tag t-cyc";t.textContent=CYC[it.c];tags.appendChild(t);}
   if(it.custom){const x=document.createElement("button");x.className="del";x.type="button";
-    x.textContent="✕";x.title="삭제";
-    x.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();delCustom(it.id);});
-    tags.appendChild(x);}
+    x.textContent="✕";x.setAttribute("aria-label",it.n+" 삭제");
+    x.addEventListener("click",()=>delCustom(it.id));tags.appendChild(x);}
   el.append(cb,mid,tags);return el;
 }
 function adder(c){
@@ -349,43 +309,26 @@ function adder(c){
 }
 function ticks(){
   const now=new Date();
-  $("rD").textContent=dur(nextDay(now)-now)+" 뒤";
-  const ds=dayStart(now),span=nextDay(now)-ds;
-  $("rB").style.width=Math.round((now-ds)/span*100)+"%";
-  const sz=new Date("2026-10-15T04:59:00+09:00"),left=sz-now;
-  $("sz").textContent=left<0?"종료됨":dur(left)+" 뒤";
-  $("szB").style.width=left<0?"100%":Math.max(0,Math.min(100,100-left/(14*864e5)*100))+"%";
-}
-function renderEvents(){
-  const now=new Date(),box=$("evs");box.textContent="";
-  const live=EVENTS.filter(e=>new Date(e.e)>now);
-  if(!live.length){const p=document.createElement("p");p.className="note";
-    p.textContent="진행 중인 이벤트가 없습니다.";box.appendChild(p);return;}
-  for(const e of live){
-    const r=document.createElement("div");r.className="ev";
-    const n=document.createElement("div");n.style.minWidth="0";
-    n.append(e.n);
-    if(e.x){const s=document.createElement("span");s.className="meta";
-      s.style.cssText="display:block;font-size:12px;color:var(--ink-soft)";s.textContent=e.x;n.appendChild(s);}
-    const d=document.createElement("span");d.className="d";
-    d.textContent=(e.s?e.s.slice(5).replace("-","/")+" ~ ":"~ ")+e.e.slice(5,10).replace("-","/");
-    const L=new Date(e.e)-now,days=Math.ceil(L/864e5);
-    const l=document.createElement("span");l.className="left"+(days<=4?" soon":"");
-    l.textContent=days<=1?"오늘까지":days+"일 남음";
-    r.append(n,d,l);box.appendChild(r);
-  }
+  const ds=dayStart(now),dn=new Date(ds.getTime()+864e5);
+  $("rD").textContent=dur(dn-now);
+  $("rDB").style.width=Math.round((now-ds)/864e5*100)+"%";
+  const ws=weekStartOn(now,0),wn=new Date(ws.getTime()+7*864e5);
+  $("rW").textContent=dur(wn-now);
+  $("rWB").style.width=Math.round((now-ws)/(7*864e5)*100)+"%";
 }
 
-async function toggle(it,on){
+function setAll(it,on){setKeys(keys(it),on);}
+async function setKeys(ks,on){
+  const at=new Date().toISOString();
+  for(const k of ks){if(on)CHECKS[k]=at;else delete CHECKS[k];}
   render();
   if(!DB)return;
   try{
-    if(on){const at=new Date().toISOString();CHECKS[it.id]=at;await DB.doc("checks/"+it.id).set({at});}
-    else{delete CHECKS[it.id];await DB.doc("checks/"+it.id).delete();}
+    await Promise.all(ks.map(k=>on?DB.doc("checks/"+k).set({at}):DB.doc("checks/"+k).delete()));
   }catch(e){setStatus("저장 실패 — 다시 눌러보세요","err");}
 }
 async function addCustom(label,cycle){
-  if(!DB){setStatus("저장소 없음 — 추가할 수 없습니다","err");return;}
+  if(!DB){setStatus("저장소 없음 — 추가할 수 없어요","err");return;}
   const id="c"+Date.now().toString(36);
   CUSTOM[id]={label,cycle};render();
   try{await DB.doc("custom/"+id).set({label,cycle,at:new Date().toISOString()});}
@@ -407,26 +350,15 @@ function saveMemo(){
   },900);
 }
 
-for(const [id,f] of [["f-all","all"],["f-key","key"],["f-req","req"],["f-todo","todo"]]){
+for(const [id,f] of [["f-all","all"],["f-key","key"],["f-todo","todo"]]){
   $(id).addEventListener("click",()=>{
     FILTER=f;
-    for(const o of ["f-all","f-key","f-req","f-todo"])$(o).setAttribute("aria-pressed",String(o===id));
+    for(const o of ["f-all","f-key","f-todo"])$(o).setAttribute("aria-pressed",String(o===id));
     render();
   });
 }
 $("memo").addEventListener("input",saveMemo);
-function renderOnce(){
-  const box=$("once");box.textContent="";
-  for(const o of ONCE){
-    const r=document.createElement("div");r.className="ev";
-    const n=document.createElement("div");n.style.minWidth="0";n.append(o.n);
-    const s=document.createElement("span");
-    s.style.cssText="display:block;font-size:12px;color:var(--ink-soft)";s.textContent=o.x;
-    n.appendChild(s);r.appendChild(n);box.appendChild(r);
-  }
-}
-render();renderEvents();renderOnce();setInterval(ticks,30000);
-setInterval(()=>{render();renderEvents();},300000);
+render();setInterval(ticks,30000);setInterval(render,300000);
 
 (async()=>{
   const db=await (window.claude?.use?.("db")??null);
